@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Basic Chess Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.css">
+  <style>
+    #board {
+      width: 400px;
+      margin: 20px auto;
+    }
+    #status {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="board"></div>
+<div id="status">Game ready</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.js"></script>
+<script>
+  const board = Chessboard('board', {
+    draggable: true,
+    position: 'start',
+    onDrop: onDrop
+  });
+
+  const game = new Chess();
+
+  function onDrop(source, target) {
+    const move = game.move({
+      from: source,
+      to: target,
+      promotion: 'q' // promote to queen by default
+    });
+
+    if (move === null) return 'snapback';
+
+    updateStatus();
+  }
+
+  function updateStatus() {
+    let status = '';
+
+    if (game.in_checkmate()) {
+      status = 'Checkmate! Game over.';
+    } else if (game.in_draw()) {
+      status = 'Draw!';
+    } else {
+      status = `Turn: ${game.turn() === 'w' ? 'White' : 'Black'}`;
+      if (game.in_check()) {
+        status += ' - Check!';
+      }
+    }
+
+    document.getElementById('status').textContent = status;
+  }
+</script>
+
+</body>
+</html>
